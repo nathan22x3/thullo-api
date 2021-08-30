@@ -1,0 +1,15 @@
+# dependencies
+/node_modules
+
+# production
+/build
+
+# logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv
+.env
+.env.dev
+.env.production
