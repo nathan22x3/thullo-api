@@ -2,7 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import { connectDB } from './configs/database';
 import { env } from './configs/environment';
-import { api } from './routes';
+import api from './routes';
 
 // MongoDB connection
 connectDB()

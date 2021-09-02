@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import BoardController from '../controllers/board.controller';
-import BoardValidation from '../validations/board.validation';
+import * as BoardController from '../controllers/board.controller';
+import * as BoardValidation from '../validations/board.validation';
 
 const router = Router();
 

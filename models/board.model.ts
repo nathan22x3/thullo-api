@@ -12,7 +12,7 @@ export interface IBoard {
 const collection = 'boards';
 
 const boardSchema = Joi.object<IBoard>({
-  title: Joi.string().min(3).max(20).required(),
+  title: Joi.string().min(3).max(30).required(),
   listOrder: Joi.array().items(Joi.string()).default([]),
   createdAt: Joi.date().timestamp().default(Date.now()),
   updatedAt: Joi.date().timestamp().default(Date.now()),

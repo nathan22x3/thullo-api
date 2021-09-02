@@ -2,13 +2,17 @@ import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
 import HttpStatusCode from '../constants/httpStatusCode.constant';
 
-const createNew = async (req: Request, res: Response, next: NextFunction) => {
+export const createNew = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const condition = Joi.object({
-    title: Joi.string().min(3).max(20).required(),
+    title: Joi.string().min(3).max(30).required(),
   });
 
   try {
-    await condition.validateAsync(req.body);
+    await condition.validateAsync(req.body, { abortEarly: false });
     next();
   } catch (error) {
     res
@@ -16,5 +20,3 @@ const createNew = async (req: Request, res: Response, next: NextFunction) => {
       .json({ errors: new Error(error).message });
   }
 };
-
-export default { createNew };
