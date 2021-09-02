@@ -1,11 +1,12 @@
+import { ICard } from './card.model';
 import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 import { getDB } from '../configs/database';
 
 export interface IList {
-  boardId: string;
+  boardId: ObjectId;
   title: string;
-  cardOrder?: string[];
+  cardOrder?: ObjectId[];
   createdAt?: number;
   updatedAt?: number;
   _destroy?: boolean;
@@ -28,8 +29,19 @@ const validateSchema = async (data: IList) => {
 
 const createNew = async (data: IList) => {
   try {
-    const list: IList = await validateSchema(data);
-    const result = await getDB().collection(collection).insertOne(list);
+    const validateValue: IList = await validateSchema(data);
+    const doc = {
+      ...validateValue,
+      boardId: new ObjectId(validateValue.boardId),
+    };
+    const result = await getDB()
+      .collection<IList>(collection)
+      .insertOne(doc)
+      .then((value) => ({
+        ...doc,
+        _id: value.insertedId,
+      }));
+
     return result;
   } catch (error) {
     throw new Error(error).message;
@@ -39,16 +51,33 @@ const createNew = async (data: IList) => {
 const update = async (id: string, data: IList) => {
   try {
     const result = await getDB()
-      .collection(collection)
+      .collection<IList>(collection)
       .findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: data },
         { returnDocument: 'after' }
       );
+
     return result.value;
   } catch (error) {
     throw new Error(error).message;
   }
 };
 
-export default { createNew, update };
+const pushCardOrder = async (listId: ObjectId, cardId: ObjectId) => {
+  try {
+    const result = await getDB()
+      .collection<IList>(collection)
+      .findOneAndUpdate(
+        { _id: listId },
+        { $push: { cardOrder: cardId }, $set: { updatedAt: Date.now() } },
+        { returnDocument: 'after' }
+      );
+
+    return result.value;
+  } catch (error) {
+    throw new Error(error).message;
+  }
+};
+
+export default { createNew, update, pushCardOrder };

@@ -1,9 +1,14 @@
 import CardModel, { ICard } from '../models/card.model';
+import ListModel from '../models/list.model';
 
 export const createNew = async (data: ICard) => {
   try {
-    const result = await CardModel.createNew(data);
-    return result;
+    const insertedCard = await CardModel.createNew(data);
+
+    // update cardOrder in List collection
+    await ListModel.pushCardOrder(insertedCard.listId, insertedCard._id);
+
+    return insertedCard;
   } catch (error) {
     throw new Error(error).message;
   }

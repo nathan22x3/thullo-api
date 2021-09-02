@@ -10,3 +10,13 @@ export const createNew = async (req: Request, res: Response) => {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ errors: error });
   }
 };
+
+export const getFullBoard = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await BoardService.getFullBoard(id);
+    res.status(HttpStatusCode.OK).json({ result });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ errors: error });
+  }
+};

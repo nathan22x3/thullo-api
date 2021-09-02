@@ -1,9 +1,14 @@
+import BoardModel from '../models/board.model';
 import ListModel, { IList } from '../models/list.model';
 
 export const createNew = async (data: IList) => {
   try {
-    const result = await ListModel.createNew(data);
-    return result;
+    const insertedList = await ListModel.createNew(data);
+
+    // update listOrder in Board collection
+    await BoardModel.pushListOrder(insertedList.boardId, insertedList._id);
+
+    return insertedList;
   } catch (error) {
     throw new Error(error).message;
   }

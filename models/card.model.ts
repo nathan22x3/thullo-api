@@ -1,10 +1,10 @@
 import Joi from 'joi';
-import { getDB } from '../configs/database';
 import { ObjectId } from 'mongodb';
+import { getDB } from '../configs/database';
 
 export interface ICard {
-  boardId: string;
-  listId: string;
+  boardId: ObjectId;
+  listId: ObjectId;
   title: string;
   cover?: string;
   createdAt?: number;
@@ -30,8 +30,20 @@ const validateSchema = async (data: ICard) => {
 
 const createNew = async (data: ICard) => {
   try {
-    const card: ICard = await validateSchema(data);
-    const result = await getDB().collection(collection).insertOne(card);
+    const validateValue: ICard = await validateSchema(data);
+    const doc = {
+      ...validateValue,
+      boardId: new ObjectId(validateValue.boardId),
+      listId: new ObjectId(validateValue.listId),
+    };
+    const result = await getDB()
+      .collection<ICard>(collection)
+      .insertOne(doc)
+      .then((value) => ({
+        ...doc,
+        _id: value.insertedId,
+      }));
+
     return result;
   } catch (error) {
     throw new Error(error).message;
@@ -41,7 +53,7 @@ const createNew = async (data: ICard) => {
 const update = async (id: string, data: ICard) => {
   try {
     const result = await getDB()
-      .collection(collection)
+      .collection<ICard>(collection)
       .findOneAndUpdate(
         { _id: new ObjectId(id) },
         { $set: data },

@@ -15,7 +15,7 @@ export const update = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const result = await ListService.update(id, req.body);
-    res.status(HttpStatusCode.CREATED).json({ result });
+    res.status(HttpStatusCode.OK).json({ result });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ errors: error });
   }
