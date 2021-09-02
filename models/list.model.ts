@@ -1,9 +1,8 @@
 import Joi from 'joi';
-import { Types } from 'mongoose';
 import { getDB } from '../configs/database';
 
 export interface IList {
-  boardId: Types.ObjectId;
+  boardId: string;
   title: string;
   cardOrder?: string[];
   createdAt?: number;
@@ -14,7 +13,7 @@ export interface IList {
 const collection = 'lists';
 
 const listSchema = Joi.object<IList>({
-  boardId: Joi.object<Types.ObjectId>().required(),
+  boardId: Joi.string().required(),
   title: Joi.string().min(3).max(20).required(),
   cardOrder: Joi.array().items(Joi.string()).default([]),
   createdAt: Joi.date().timestamp().default(Date.now()),

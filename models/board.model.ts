@@ -29,8 +29,8 @@ const createNew = async (data: IBoard) => {
     const result = await getDB().collection(collection).insertOne(board);
     return result;
   } catch (error) {
-    console.error(error);
+    throw new Error(error).message;
   }
 };
 
-export const BoardModel = { createNew };
+export default { createNew };

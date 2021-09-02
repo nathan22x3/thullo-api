@@ -1,10 +1,9 @@
 import Joi from 'joi';
-import { Types } from 'mongoose';
 import { getDB } from '../configs/database';
 
 export interface ICard {
-  boardId: Types.ObjectId;
-  cardId: Types.ObjectId;
+  boardId: string;
+  cardId: string;
   title: string;
   cover?: string;
   createdAt?: number;
@@ -15,8 +14,8 @@ export interface ICard {
 const collection = 'cards';
 
 const cardSchema = Joi.object<ICard>({
-  boardId: Joi.object<Types.ObjectId>().required(),
-  cardId: Joi.object<Types.ObjectId>().required(),
+  boardId: Joi.string().required(),
+  cardId: Joi.string().required(),
   title: Joi.string().min(3).max(20).required(),
   cover: Joi.string().default(null),
   createdAt: Joi.date().timestamp().default(Date.now()),

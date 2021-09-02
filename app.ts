@@ -1,7 +1,8 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import morgan from 'morgan';
 import { connectDB } from './configs/database';
 import { env } from './configs/environment';
+import { api } from './routes';
 
 // MongoDB connection
 connectDB()
@@ -20,10 +21,8 @@ const bootServer = () => {
   app.use(express.urlencoded({ extended: false }));
   app.use(morgan('dev'));
 
-  // Routes
-  app.get('/', (_: Request, res: Response) => {
-    res.json({ message: 'Hello World' });
-  });
+  // API Routes
+  app.use('/api', api);
 
   // Server listenning
   const port = env.PORT;
