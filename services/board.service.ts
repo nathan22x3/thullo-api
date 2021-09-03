@@ -11,16 +11,16 @@ export const createNew = async (data: IBoard) => {
 
 export const getFullBoard = async (id: string) => {
   try {
-    const board = await BoardModel.getFullBoard(id);
+    const fullBoard = await BoardModel.getFullBoard(id);
 
-    board.lists.forEach((list) => {
-      list.cards = board.cards.filter(
-        (card) => card.listId.toString() === list._id.toString()
+    fullBoard.lists.forEach((list) => {
+      list.cards = fullBoard.cards.filter((card) =>
+        card.listId.equals(list._id)
       );
     });
-    delete board.cards;
+    delete fullBoard.cards;
 
-    return board;
+    return fullBoard;
   } catch (error) {
     throw new Error(error).message;
   }

@@ -1,6 +1,8 @@
+import { ICard } from './card.model';
 import Joi from 'joi';
 import { ObjectId } from 'mongodb';
 import { getDB } from './../configs/database';
+import { IList } from './list.model';
 
 export interface IBoard {
   title: string;
@@ -8,6 +10,15 @@ export interface IBoard {
   createdAt?: number;
   updatedAt?: number;
   _destroy?: boolean;
+}
+
+interface IFullBoard extends IBoard {
+  lists: IFullList[];
+  cards?: ICard[];
+}
+interface IFullList extends IList {
+  _id: ObjectId;
+  cards: ICard[];
 }
 
 const collection = 'boards';
@@ -61,7 +72,7 @@ const getFullBoard = async (id: string) => {
   try {
     const result = await getDB()
       .collection(collection)
-      .aggregate([
+      .aggregate<IFullBoard>([
         { $match: { _id: new ObjectId(id) } },
         {
           $lookup: {
@@ -82,7 +93,7 @@ const getFullBoard = async (id: string) => {
       ])
       .toArray();
 
-    return { ...result[0] };
+    return result[0];
   } catch (error) {
     throw new Error(error).message;
   }

@@ -1,8 +1,10 @@
 import express from 'express';
 import morgan from 'morgan';
+import cors from 'cors';
 import { connectDB } from './configs/database';
 import { env } from './configs/environment';
 import api from './routes';
+import HttpStatusCode from './constants/httpStatusCode.constant';
 
 // MongoDB connection
 connectDB()
@@ -17,6 +19,19 @@ const bootServer = () => {
   const app = express();
 
   // Middlewares
+  const whitelist = env.CORS_WHITELIST.split(', ');
+  const corsOptions: cors.CorsOptions = {
+    origin: (origin, callback) => {
+      if (whitelist.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    optionsSuccessStatus: HttpStatusCode.OK,
+  };
+  app.use(cors(corsOptions));
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(morgan('dev'));

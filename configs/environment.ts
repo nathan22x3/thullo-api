@@ -5,4 +5,5 @@ export const env = {
   PORT: process.env.PORT,
   DATABASE_NAME: process.env.DATABASE_NAME,
   MONGODB_URI: process.env.MONGODB_URI,
+  CORS_WHITELIST: process.env.CORS_WHITELIST,
 };
